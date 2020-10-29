@@ -19,6 +19,8 @@ HELP_MESSAGE = \
     '++ 1) Path to geoschem.xml (usually in components/cam/bld/namelist_files/use_cases)\n' +\
     '++ 2) Path to species_database.yml (optional)\n'
 
+USE_MAM4 = True
+
 args = len(sys.argv) - 1
 if args == 0:
     print(HELP_MESSAGE)
@@ -40,9 +42,14 @@ else:
 ###############################################################################################
 
 GasDryDepList = []
-AerDryDepList = []
 GasWetDepList = []
-AerWetDepList = []
+
+if USE_MAM4:
+    AerDryDepList = ['dst_a1','so4_a1','nh4_a1','pom_a1','pomff1_a1','pombb1_a1','soa_a1','bc_a1','ncl_a1','num_a1','so4_a2','nh4_a2','soa_a2','ncl_a2','dst_a2','num_a2','dst_a3','ncl_a3','so4_a3','pom_a3','bc_a3','num_a3','ncl_a4','so4_a4','pom_a4','pomff1_a4','pombb1_a4','bc_a4','nh4_a4','num_a4','dst_a5','so4_a5','nh4_a5','num_a5','ncl_a6','so4_a6','nh4_a6','num_a6','dst_a7','so4_a7','nh4_a7','num_a7','soa1_a1','soa1_a2','soa2_a1','soa2_a2','soa3_a1','soa3_a2','soa4_a1','soa4_a2','soa5_a1','soa5_a2','soaff1_a1','soaff2_a1','soaff3_a1','soaff4_a1','soaff5_a1','soabb1_a1','soabb2_a1','soabb3_a1','soabb4_a1','soabb5_a1','soabg1_a1','soabg2_a1','soabg3_a1','soabg4_a1','soabg5_a1','soaff1_a2','soaff2_a2','soaff3_a2','soaff4_a2','soaff5_a2','soabb1_a2','soabb2_a2','soabb3_a2','soabb4_a2','soabb5_a2','soabg1_a2','soabg2_a2','soabg3_a2','soabg4_a2','soabg5_a2']
+    AerWetDepList = ['dst_a1','so4_a1','nh4_a1','pom_a1','pomff1_a1','pombb1_a1','soa_a1','bc_a1','ncl_a1','num_a1','so4_a2','nh4_a2','soa_a2','ncl_a2','dst_a2','num_a2','dst_a3','ncl_a3','so4_a3','pom_a3','bc_a3','num_a3','ncl_a4','so4_a4','pom_a4','pomff1_a4','pombb1_a4','bc_a4','nh4_a4','num_a4','dst_a5','so4_a5','nh4_a5','num_a5','ncl_a6','so4_a6','nh4_a6','num_a6','dst_a7','so4_a7','nh4_a7','num_a7','soa1_a1','soa1_a2','soa2_a1','soa2_a2','soa3_a1','soa3_a2','soa4_a1','soa4_a2','soa5_a1','soa5_a2','soaff1_a1','soaff2_a1','soaff3_a1','soaff4_a1','soaff5_a1','soabb1_a1','soabb2_a1','soabb3_a1','soabb4_a1','soabb5_a1','soabg1_a1','soabg2_a1','soabg3_a1','soabg4_a1','soabg5_a1','soaff1_a2','soaff2_a2','soaff3_a2','soaff4_a2','soaff5_a2','soabb1_a2','soabb2_a2','soabb3_a2','soabb4_a2','soabb5_a2','soabg1_a2','soabg2_a2','soabg3_a2','soabg4_a2','soabg5_a2']
+else:
+    AerDryDepList = []
+    AerWetDepList = []
 
 with open(YAMLFile, 'r') as stream:
     try:
@@ -65,13 +72,13 @@ with open(YAMLFile, 'r') as stream:
                 else:
                     IsWD = False
                 if IsGas and IsDD:
-                    GasDryDepList.append(species)
+                    GasDryDepList.append(species.upper())
                 if IsGas and IsWD:
-                    GasWetDepList.append(species)
+                    GasWetDepList.append(species.upper())
                 if not IsGas and IsDD:
-                    AerDryDepList.append(species)
+                    AerDryDepList.append(species.upper())
                 if not IsGas and IsWD:
-                    AerWetDepList.append(species)
+                    AerWetDepList.append(species.upper())
     except yaml.YAMLError as exc:
         print(exc)
 
@@ -92,7 +99,7 @@ with open(XMLFile) as f:
             try:
                 elem.text = "\n  "
                 for spec in List:
-                    elem.text += "'{:s}',".format(spec.upper())
+                    elem.text += "'{:s}',".format(spec)
                 elem.text += "\n"
             except AttributeError:
                 pass
@@ -101,7 +108,7 @@ with open(XMLFile) as f:
             try:
                 elem.text = "\n  "
                 for spec in List:
-                    elem.text += "'{:s}',".format(spec.upper())
+                    elem.text += "'{:s}',".format(spec)
                 elem.text += "\n"
             except AttributeError:
                 pass
@@ -110,7 +117,7 @@ with open(XMLFile) as f:
             try:
                 elem.text = "\n  "
                 for spec in List:
-                    elem.text += "'{:s}',".format(spec.upper())
+                    elem.text += "'{:s}',".format(spec)
                 elem.text += "\n"
             except AttributeError:
                 pass
@@ -119,7 +126,7 @@ with open(XMLFile) as f:
             try:
                 elem.text = "\n  "
                 for spec in List:
-                    elem.text += "'{:s}',".format(spec.upper())
+                    elem.text += "'{:s}',".format(spec)
                 elem.text += "\n"
             except AttributeError:
                 pass
