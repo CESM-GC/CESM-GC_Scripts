@@ -108,7 +108,7 @@ srcDir=$cesmRepo/cime/scripts
 ln -s $srcDir $baseFolder/scripts
 echo "--> scripts: $srcDir"
 
-srcDir=$cesmRepo/components/cam/src/chemistry/pp_geoschem/geoschem_src
+srcDir=$cesmRepo/components/cam/src/chemistry/geoschem/geoschem_src
 ln -s $srcDir  $baseFolder/GEOS-Chem
 echo "--> GEOS-Chem: $srcDir"
 
