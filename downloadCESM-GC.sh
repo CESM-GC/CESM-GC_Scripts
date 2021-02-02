@@ -68,39 +68,17 @@ if [ $? != 0 ]; then
     exit 1;
 fi
 
-# Step 5: Get modifications to the coupler.
-git clone git@github.com:CESM-GC/CESM2-GC_SourceMods.git $baseFolder/CESM-GC_SourceMods
-# As of right now, the option --user-mods-dir in create_newcase seems
-# to not pick up the modified files. We thus revert to copying the changes
-# where needed
-cp $baseFolder/CESM-GC_SourceMods/src.drv/seq_drydep_mod.F90 $cesmRepo/cime/src/drivers/mct/shr
-
-if [ $? != 0 ]; then
-    echo "Error in Step 5: Something went wrong when applying changes to the coupler!"
-    exit 1;
-fi
-
-# Step 6: Obtain configuration files. If you have already run CESM before,
+# Step 5: Obtain configuration files. If you have already run CESM before,
 # then you probably have these files already
 if [ ! -d $HOME/.cime ]; then
     ln -s $sharedFolder/.cime $HOME/.cime
 else
-    echo "Skipping Step 6: $HOME/.cime already exists!"
+    echo "Skipping Step 5: $HOME/.cime already exists!"
 fi
 
-# Step 7: Only the GEOS-Chem chemistry files are compiled. We use a
-# modified version of mkSrcfiles to exclude file at compile time
 CIMEROOT=$PWD/cime/
-if [ -d $CIMEROOT/scripts/Tools ]; then
-    cp $sharedFolder/mkSrcfiles $CIMEROOT/scripts/Tools
-    chmod +x $CIMEROOT/scripts/Tools/mkSrcfiles
-else
-    echo "Error in Step 7: Could not locate cime/scripts/Tools"
-    echo "Attempt was $CIMEROOT/scripts/Tools"
-    exit 1;
-fi
 
-# Step 8: Create convenience symbolic links to HEMCO and GEOS-Chem
+# Step 6: Create convenience symbolic links to HEMCO and GEOS-Chem
 echo ""
 echo "Creating symbolic links for convenience:"
 
@@ -139,10 +117,11 @@ echo "--> Externals_HCO.cfg: $srcFile"
 echo ""
 echo "Setup is complete!"
 echo "To build a case, go to $CIMEROOT/scritps and create a new case:"
-echo "GEOS-Chem has 3 different compsets, paired with each version of CLM:"
-echo "- FGC (default GEOS-Chem compset paired with CLM4.0)"
-echo "- FGC_CLM45 (GEOS-Chem compset paired with CLM4.5)"
-echo "- FGC_CLM50 (GEOS-Chem compset paired with CLM5.0)"
-echo "> $CIMEROOT/scripts/create_newcase --case /path/to/folder --compset FGC_CLM50 --res f19_f19_mg17 --run-unsupported --project PROJECT_ID"
+echo "GEOS-Chem has different compsets, built around the existing compsets for CAM-Chem:"
+echo "- FC2010climo_GC"
+echo "- FC2000climo_GC"
+echo "- FCSD_GC"
+echo "- FCHIST_GC"
+echo "> $CIMEROOT/scripts/create_newcase --case /path/to/folder --compset FCSD_GC --res f09_f09_mg17 --run-unsupported --project PROJECT_ID"
 echo "Please fill in /path/to/folder and PROJECT_ID"
 
